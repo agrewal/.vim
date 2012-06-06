@@ -51,6 +51,30 @@ function! QFDo(command)
     endfor
 endfunction
 
+
+" Highlight all instances of word under cursor, when idle.
+" Useful when studying strange source code.
+" Type z/ to toggle highlighting on/off.
+nnoremap z/ :if AutoHighlightToggle()<Bar>set hls<Bar>endif<CR>
+function! AutoHighlightToggle()
+  let @/ = ''
+  if exists('#auto_highlight')
+    au! auto_highlight
+    augroup! auto_highlight
+    setl updatetime=4000
+    echo 'Highlight current word: off'
+    return 0
+  else
+    augroup auto_highlight
+      au!
+      au CursorHold * let @/ = '\V\<'.escape(expand('<cword>'), '\').'\>'
+    augroup end
+    setl updatetime=2000
+    echo 'Highlight current word: ON'
+    return 1
+  endif
+endfunction
+
 " ,v brings up my .vimrc
 " ,V reloads it -- making all changes active (have to save first)
 map <leader>v :sp ~/.vimrc<CR><C-W>_
@@ -92,7 +116,7 @@ endfunction
 
 nmap <silent> <leader>l :call ToggleList("Location List", 'l')<CR>
 nmap <silent> <leader>c :call ToggleList("Quickfix List", 'c')<CR>
-nmap <silent> <F4> :call ToggleList("Quickfix List", 'c')<CR>
+"nmap <silent> <F4> :call ToggleList("Quickfix List", 'c')<CR>
 
 " Ack searching
 nmap <leader>a <Esc>:Ack! 
@@ -138,18 +162,16 @@ map <silent> <unique> ;ma :ShowMarksClearAll<cr>
 map <silent> <unique> ;mm :ShowMarksPlaceMark<cr>
 
 " NERDTree mappings
-nnoremap <silent> <F1> :NERDTreeToggle<CR>
-inoremap <silent> <F1> <ESC>:NERDTreeToggle<CR>
-nnoremap <silent> <F2> :NERDTreeFind<CR>
-inoremap <silent> <F2> <ESC>:NERDTreeFind<CR>
-"let g:NERDTreeQuitOnOpen=1
+nnoremap <silent> <F1> :NERDTreeFind<CR>
+inoremap <silent> <F1> <ESC>:NERDTreeFind<CR>
+let g:NERDTreeQuitOnOpen=1
 let g:NERDTreeChDirMode=2
-let g:NERDTreeMapActivateNode="<F2>"
 let g:NERDTreeShowBookmarks=1
+let g:NERDTreeMapQuit="<F1>"
 
 " TagBar mappings
-nnoremap <silent> <F3> :TagbarToggle<CR>
-inoremap <silent> <F3> <ESC>:TagbarToggle<CR>
+nnoremap <silent> <F2> :TagbarToggle<CR>
+inoremap <silent> <F2> <ESC>:TagbarToggle<CR>
 let g:tagbar_type_scala = {
     \ 'ctagstype' : 'Scala',
     \ 'kinds'     : [
