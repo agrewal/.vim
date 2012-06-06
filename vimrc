@@ -22,6 +22,35 @@ function! MyMake()
     echo "Make complete !"
 endfunction 
 
+" Define a command to make it easier to use
+command! -nargs=+ QFDo call QFDo(<q-args>)
+
+" Function that does the work
+function! QFDo(command)
+    " Create a dictionary so that we can
+    " get the list of buffers rather than the
+    " list of lines in buffers (easy way
+    " to get unique entries)
+    let buffer_numbers = {}
+    " For each entry, use the buffer number as 
+    " a dictionary key (won't get repeats)
+    for fixlist_entry in getqflist()
+        let buffer_numbers[fixlist_entry['bufnr']] = 1
+    endfor
+    " Make it into a list as it seems cleaner
+    let buffer_number_list = keys(buffer_numbers)
+
+    " For each buffer
+    for num in buffer_number_list
+        " Select the buffer
+        exe 'buffer' num
+        " Run the command that's passed as an argument
+        exe a:command
+        " Save if necessary
+        update
+    endfor
+endfunction
+
 " ,v brings up my .vimrc
 " ,V reloads it -- making all changes active (have to save first)
 map <leader>v :sp ~/.vimrc<CR><C-W>_
@@ -31,11 +60,43 @@ map <silent> <leader>V :source ~/.vimrc<CR>:filetype detect<CR>:exe ":echo 'vimr
 nnoremap <leader>q :q<cr>
 
 " open/close the quickfix window
-nmap <leader>co :copen<CR>
-nmap <leader>cc :cclose<CR>
+"nmap <leader>co :copen<CR>
+"nmap <leader>cc :cclose<CR>
+
+function! GetBufferList()
+  redir =>buflist
+  silent! ls
+  redir END
+  return buflist
+endfunction
+
+function! ToggleList(bufname, pfx)
+  let buflist = GetBufferList()
+  for bufnum in map(filter(split(buflist, '\n'), 'v:val =~ "'.a:bufname.'"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
+    if bufwinnr(bufnum) != -1
+      exec(a:pfx.'close')
+      return
+    endif
+  endfor
+  if a:pfx == 'l' && len(getloclist(0)) == 0
+      echohl ErrorMsg
+      echo "Location List is Empty."
+      return
+  endif
+  let winnr = winnr()
+  exec(a:pfx.'open')
+  if winnr() != winnr
+    wincmd p
+  endif
+endfunction
+
+nmap <silent> <leader>l :call ToggleList("Location List", 'l')<CR>
+nmap <silent> <leader>c :call ToggleList("Quickfix List", 'c')<CR>
+nmap <silent> <F4> :call ToggleList("Quickfix List", 'c')<CR>
 
 " Ack searching
-nmap <leader>a <Esc>:Ack!
+nmap <leader>a <Esc>:Ack! 
+let g:ackhighlight = 1
 
 " Load the Gundo window
 map <leader>g :GundoToggle<CR>
@@ -77,14 +138,18 @@ map <silent> <unique> ;ma :ShowMarksClearAll<cr>
 map <silent> <unique> ;mm :ShowMarksPlaceMark<cr>
 
 " NERDTree mappings
-map <F1> :NERDTreeToggle<CR>
-imap <F1> <ESC>:NERDTreeToggle<CR>
-let g:NERDTreeQuitOnOpen=1
+nnoremap <silent> <F1> :NERDTreeToggle<CR>
+inoremap <silent> <F1> <ESC>:NERDTreeToggle<CR>
+nnoremap <silent> <F2> :NERDTreeFind<CR>
+inoremap <silent> <F2> <ESC>:NERDTreeFind<CR>
+"let g:NERDTreeQuitOnOpen=1
 let g:NERDTreeChDirMode=2
+let g:NERDTreeMapActivateNode="<F2>"
+let g:NERDTreeShowBookmarks=1
 
 " TagBar mappings
-nnoremap <silent> <F2> :TagbarToggle<CR>
-inoremap <silent> <F2> <ESC>:TagbarToggle<CR>
+nnoremap <silent> <F3> :TagbarToggle<CR>
+inoremap <silent> <F3> <ESC>:TagbarToggle<CR>
 let g:tagbar_type_scala = {
     \ 'ctagstype' : 'Scala',
     \ 'kinds'     : [
@@ -100,6 +165,8 @@ let g:tagbar_type_scala = {
         \ 'm:methods'
     \ ]
 \ }
+
+"map <F4> :execute 'Ack! ' . expand('<cword>')<CR>
 
 " Ctags
 set tags+=./tags;/
@@ -195,7 +262,7 @@ set shortmess+=a            " Use [+]/[RO]/[w] for modified/readonly/written.
 set ruler                   " Show some info, even without statuslines.
 set laststatus=2            " Always show statusline, even if only 1 window.
 "set statusline=%<%F%h%m%r%h%w%y\ %{&ff}\ %{\"[\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\"]\ \"}\ %{g:sfe_getStatus()}%=\ lin:%l\,%L\ col:%c%V\ pos:%o\ ascii:%b\ %P
-set statusline=%<%F%h%m%r%h%w%y\ %{&ff}\ %{\"[\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\"]\ \"}\ lin:%l\,%L\ col:%c%V\ pos:%o\ ascii:%b\ %P
+set statusline=%<%F%h%m%r%h%w%y\ %{&ff}\ %{\"[\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\"]\ \"}\ buf:%n\ lin:%l\,%L\ col:%c%V\ pos:%o\ ascii:%b\ %P
 
 " displays tabs with :set list & displays when a line runs off-screen
 set listchars=tab:>-,eol:$,trail:-,precedes:<,extends:>
@@ -211,12 +278,14 @@ set incsearch               " Incrementally search while typing a /regex
 """" Display
 if has("gui_running")
     set gfn=Menlo\ Regular:h12
+    set guioptions-=T
+    "set gfn=Consolas:h12,Menlo\ Regular:h12
     set fuopt=maxvert,maxhorz
-    set background=light
-    colorscheme solarized
+    "set background=light
+    colorscheme wombat256mod
 else
     set background=dark
-    colorscheme inkpot
+    colorscheme wombat256mod
 endif
 
 " Command-T 
