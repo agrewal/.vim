@@ -101,6 +101,8 @@ let g:tagbar_type_scala = {
     \ ]
 \ }
 
+" Ctags
+set tags+=./tags;/
 
 "" FuzzyFinder plugin
 "map <F2> :FufBuffer<CR>
