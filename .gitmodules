@@ -31,3 +31,6 @@
 [submodule "bundle/nerdtree-ack"]
 	path = bundle/nerdtree-ack
 	url = git://github.com/vim-scripts/nerdtree-ack.git
+[submodule "bundle/vim-unimpaired"]
+	path = bundle/vim-unimpaired
+	url = git://github.com/tpope/vim-unimpaired.git
