@@ -28,3 +28,6 @@
 [submodule "bundle/vim-thrift"]
 	path = bundle/vim-thrift
 	url = gh:agrewal/vim-thrift
+[submodule "bundle/nerdtree-ack"]
+	path = bundle/nerdtree-ack
+	url = git://github.com/vim-scripts/nerdtree-ack.git
