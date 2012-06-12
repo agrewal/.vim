@@ -196,6 +196,9 @@ set tags+=./tags;/
 " vimwiki mappings
 let g:vimwiki_list = [{'path': '~/Dropbox/vimwiki/'}]
 
+" taskpaper mappings
+nnoremap <silent> <F3> :e ~/Dropbox/main.taskpaper<CR>
+inoremap <silent> <F3> <ESC>:e ~/Dropbox/main.taskpaper<CR>
 
 "" FuzzyFinder plugin
 "map <F2> :FufBuffer<CR>
