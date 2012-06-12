@@ -37,3 +37,6 @@
 [submodule "bundle/syntastic"]
 	path = bundle/syntastic
 	url = git://github.com/scrooloose/syntastic.git
+[submodule "bundle/taskpaper"]
+	path = bundle/taskpaper
+	url = git://github.com/davidoc/taskpaper.vim.git
