@@ -193,6 +193,10 @@ let g:tagbar_type_scala = {
 " Ctags
 set tags+=./tags;/
 
+" vimwiki mappings
+let g:vimwiki_list = [{'path': '~/Dropbox/vimwiki/'}]
+
+
 "" FuzzyFinder plugin
 "map <F2> :FufBuffer<CR>
 "imap <F2> <ESC>:FufBuffer<CR>

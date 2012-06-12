@@ -40,3 +40,6 @@
 [submodule "bundle/taskpaper"]
 	path = bundle/taskpaper
 	url = git://github.com/davidoc/taskpaper.vim.git
+[submodule "bundle/vimwiki"]
+	path = bundle/vimwiki
+	url = gh:vim-scripts/vimwiki
