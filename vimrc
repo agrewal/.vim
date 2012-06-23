@@ -125,6 +125,9 @@ let g:ackhighlight = 1
 " Load the Gundo window
 map <leader>g :GundoToggle<CR>
 
+" fugitive
+map <leader>s :Gstatus<CR>
+
 " Make 
 map <silent> <Leader>m :call MyMake()<cr>
 
@@ -199,6 +202,11 @@ let g:vimwiki_list = [{'path': '~/Dropbox/vimwiki/'}]
 " taskpaper mappings
 nnoremap <silent> <F3> :e ~/Dropbox/main.taskpaper<CR>
 inoremap <silent> <F3> <ESC>:e ~/Dropbox/main.taskpaper<CR>
+
+" Syntastic
+let g:syntastic_mode_map = { 'mode': 'passive',
+            \ 'active_filetypes': ['ruby', 'php', 'python'],
+            \ 'passive_filetypes': ['puppet'] }
 
 "" FuzzyFinder plugin
 "map <F2> :FufBuffer<CR>
@@ -325,8 +333,6 @@ let g:CommandTMaxHeight=10
 au FileType python set omnifunc=pythoncomplete#Complete
 au FileType python setlocal expandtab shiftwidth=4 tabstop=8 softtabstop=4 smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class,with
 au BufRead *.py set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
-" Don't let pyflakes use the quickfix window
-"let g:pyflakes_use_quickfix = 0
 
 " Add the virtualenv's site-packages to vim path
 py << EOF
