@@ -80,13 +80,6 @@ endfunction
 map <leader>v :sp ~/.vimrc<CR><C-W>_
 map <silent> <leader>V :source ~/.vimrc<CR>:filetype detect<CR>:exe ":echo 'vimrc reloaded'"<CR>
 
-" quit window on <leader>q
-nnoremap <leader>q :q<cr>
-
-" open/close the quickfix window
-"nmap <leader>co :copen<CR>
-"nmap <leader>cc :cclose<CR>
-
 function! GetBufferList()
   redir =>buflist
   silent! ls
@@ -116,17 +109,14 @@ endfunction
 
 nmap <silent> <leader>l :call ToggleList("Location List", 'l')<CR>
 nmap <silent> <leader>c :call ToggleList("Quickfix List", 'c')<CR>
-"nmap <silent> <F4> :call ToggleList("Quickfix List", 'c')<CR>
 
 " Ack searching
 nmap <leader>a <Esc>:Ack! 
 let g:ackhighlight = 1
 
-" Load the Gundo window
-map <leader>g :GundoToggle<CR>
-
 " fugitive
-map <leader>s :Gstatus<CR>
+nmap <leader>s :Gstatus<CR>
+nmap <leader>g :Ggrep 
 
 " Make 
 map <silent> <Leader>m :call MyMake()<cr>
@@ -142,12 +132,6 @@ nmap <silent> <Leader>f :CommandT<CR>
 
 " Delete buffer
 nmap <C-k> :bdelete<CR>
-
-"" SFE mappings
-"let g:sfe_mapLeader = ',s'
-"let g:sfe_mapLeaderAlternate = ',S'
-"let g:sfe_mapKeyCommitTracked = 'c'
-"let g:sfe_mapKeyCommitAll     = 'a'
 
 "ShowMarks mappings
 set updatetime=100
@@ -208,11 +192,6 @@ let g:syntastic_mode_map = { 'mode': 'passive',
             \ 'active_filetypes': ['ruby', 'php', 'python'],
             \ 'passive_filetypes': ['puppet'] }
 
-"" FuzzyFinder plugin
-"map <F2> :FufBuffer<CR>
-"imap <F2> <ESC>:FufBuffer<CR>
-"map <F3> :FufFile<CR>
-"imap <F3> <ESC>:FufFile<CR>
 
 " ==========================================================
 " Pathogen - Allows us to organize our vim plugins
@@ -238,6 +217,7 @@ set wildmode=longest:full     " <Tab> cycles between all matching choices.
 " don't bell or blink
 set noerrorbells
 set vb t_vb=
+set term=screen-256color
 
 " Ignore these files when completing
 set wildignore+=*.o,*.obj,.git,*.pyc,*.class,*.jar,*.swp
@@ -273,6 +253,7 @@ set matchpairs+=<:>         " show matching <> (html mainly) as well
 set foldmethod=indent       " allow us to fold on indents
 set foldlevel=99            " don't fold by default
 set hidden
+set clipboard=unnamed
 
 " don't outdent hashes
 inoremap # #
