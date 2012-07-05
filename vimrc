@@ -193,6 +193,7 @@ let g:syntastic_mode_map = { 'mode': 'passive',
             \ 'passive_filetypes': ['puppet'] }
 
 
+set rtp+=$GOROOT/misc/vim/
 " ==========================================================
 " Pathogen - Allows us to organize our vim plugins
 " ==========================================================
@@ -326,12 +327,6 @@ if 'VIRTUALENV' in os.environ:
     activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
     execfile(activate_this, dict(__file__=activate_this))
 EOF
-
-" ============
-" Go
-" ============
-au FileType go set makeprg=gb
-au FileType go set efm=%D(in\ %f)%.%#,%f:%l:%m,%-G%.%#
 
 " Ragel
 au BufRead *.rl set ft=ragel
