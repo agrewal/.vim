@@ -69,7 +69,7 @@ function! AutoHighlightToggle()
       au!
       au CursorHold * let @/ = '\V\<'.escape(expand('<cword>'), '\').'\>'
     augroup end
-    setl updatetime=2000
+    setl updatetime=200
     echo 'Highlight current word: ON'
     return 1
   endif
@@ -149,8 +149,8 @@ map <silent> <unique> ;ma :ShowMarksClearAll<cr>
 map <silent> <unique> ;mm :ShowMarksPlaceMark<cr>
 
 " NERDTree mappings
-nnoremap <silent> <F1> :NERDTreeFind<CR>
-inoremap <silent> <F1> <ESC>:NERDTreeFind<CR>
+nnoremap <silent> <F1> :NERDTreeToggle<CR>
+inoremap <silent> <F1> <ESC>:NERDTreeToggle<CR>
 let g:NERDTreeQuitOnOpen=1
 let g:NERDTreeChDirMode=2
 let g:NERDTreeShowBookmarks=1
@@ -175,8 +175,6 @@ let g:tagbar_type_scala = {
     \ ]
 \ }
 
-"map <F4> :execute 'Ack! ' . expand('<cword>')<CR>
-
 " Ctags
 set tags+=./tags;/
 
@@ -186,6 +184,10 @@ let g:vimwiki_list = [{'path': '~/Dropbox/vimwiki/'}]
 " taskpaper mappings
 nnoremap <silent> <F3> :e ~/Dropbox/main.taskpaper<CR>
 inoremap <silent> <F3> <ESC>:e ~/Dropbox/main.taskpaper<CR>
+
+" Daily log
+nnoremap <silent> <F4> :e ~/Dropbox/log.md<CR>
+inoremap <silent> <F4> <ESC>:e ~/Dropbox/log.md<CR>
 
 " Syntastic
 let g:syntastic_mode_map = { 'mode': 'passive',
@@ -255,6 +257,8 @@ set foldmethod=indent       " allow us to fold on indents
 set foldlevel=99            " don't fold by default
 set hidden
 set clipboard=unnamed
+set undodir=~/.vim-undo
+set undofile
 
 " don't outdent hashes
 inoremap # #
@@ -266,7 +270,7 @@ autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 """" Reading/Writing
 set noautowrite             " Never write a file unless I request it.
 set noautowriteall          " NEVER.
-set noautoread              " Don't automatically re-read changed files.
+set autoread                " automatically re-read changed files.
 set modeline                " Allow vim options to be embedded in files;
 set modelines=5             " they must be within the first or last 5 lines.
 set ffs=unix,dos,mac        " Try recognizing dos, unix, and mac line endings.
