@@ -52,3 +52,6 @@
 [submodule "bundle/pig"]
 	path = bundle/pig
 	url = https://github.com/vim-scripts/pig.vim.git
+[submodule "bundle/python-mode"]
+	path = bundle/python-mode
+	url = git://github.com/klen/python-mode.git
