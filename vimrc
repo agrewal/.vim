@@ -1,5 +1,6 @@
 set nocompatible              " Don't be compatible with vi
 let mapleader=","             " change the leader to be a comma vs slash
+set shell=/bin/bash
 
 " sudo write this
 cmap W! w !sudo tee % >/dev/null
@@ -256,7 +257,7 @@ set matchpairs+=<:>         " show matching <> (html mainly) as well
 set foldmethod=indent       " allow us to fold on indents
 set foldlevel=99            " don't fold by default
 set hidden
-set clipboard=unnamed
+"set clipboard=unnamed
 set undodir=~/.vim-undo
 set undofile
 
@@ -334,3 +335,8 @@ EOF
 
 " Ragel
 au BufRead *.rl set ft=ragel
+
+"Pig
+augroup filetypedetect 
+  au BufNewFile,BufRead *.pig set filetype=pig syntax=pig 
+augroup END 

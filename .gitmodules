@@ -46,3 +46,9 @@
 [submodule "bundle/nerdcommenter"]
 	path = bundle/nerdcommenter
 	url = git://github.com/scrooloose/nerdcommenter.git
+[submodule "bundle/showmarks"]
+	path = bundle/showmarks
+	url = git://github.com/zakj/vim-showmarks.git
+[submodule "bundle/pig"]
+	path = bundle/pig
+	url = https://github.com/vim-scripts/pig.vim.git
