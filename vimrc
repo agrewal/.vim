@@ -151,30 +151,32 @@ map <silent> <unique> ;mm :ShowMarksPlaceMark<cr>
 
 " NERDTree mappings
 nnoremap <silent> <F1> :NERDTreeToggle<CR>
+nnoremap <silent> <F2> :NERDTreeFind<CR>
 inoremap <silent> <F1> <ESC>:NERDTreeToggle<CR>
+inoremap <silent> <F2> <ESC>:NERDTreeFind<CR>
 let g:NERDTreeQuitOnOpen=1
 let g:NERDTreeChDirMode=2
 let g:NERDTreeShowBookmarks=1
 let g:NERDTreeMapQuit="<F1>"
 
 " TagBar mappings
-nnoremap <silent> <F2> :TagbarToggle<CR>
-inoremap <silent> <F2> <ESC>:TagbarToggle<CR>
-let g:tagbar_type_scala = {
-    \ 'ctagstype' : 'Scala',
-    \ 'kinds'     : [
-        \ 'p:packages:1',
-        \ 'V:values',
-        \ 'v:variables',
-        \ 'T:types',
-        \ 't:traits',
-        \ 'o:objects',
-        \ 'a:aclasses',
-        \ 'c:classes',
-        \ 'r:cclasses',
-        \ 'm:methods'
-    \ ]
-\ }
+"nnoremap <silent> <F2> :TagbarToggle<CR>
+"inoremap <silent> <F2> <ESC>:TagbarToggle<CR>
+"let g:tagbar_type_scala = {
+"    \ 'ctagstype' : 'Scala',
+"    \ 'kinds'     : [
+"        \ 'p:packages:1',
+"        \ 'V:values',
+"        \ 'v:variables',
+"        \ 'T:types',
+"        \ 't:traits',
+"        \ 'o:objects',
+"        \ 'a:aclasses',
+"        \ 'c:classes',
+"        \ 'r:cclasses',
+"        \ 'm:methods'
+"    \ ]
+"\ }
 
 " Ctags
 set tags+=./tags;/
@@ -340,4 +342,6 @@ au BufRead *.rl set ft=ragel
 "Pig
 augroup filetypedetect 
   au BufNewFile,BufRead *.pig set filetype=pig syntax=pig 
+  au BufNewFile,BufRead BUILD set filetype=python syntax=python
+  au BufNewFile,BufRead BUILD.* set filetype=python syntax=python
 augroup END 
