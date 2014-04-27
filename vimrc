@@ -5,6 +5,11 @@ set shell=/bin/bash
 " sudo write this
 cmap W! w !sudo tee % >/dev/null
 
+set makeprg=make\ -f\ $HOME/mymake.mk
+set efm=%E\ %#[error]\ %f:%l:\ %m,%C\ %#[error]\ %p^,%-C%.%#,%Z,
+       \%W\ %#[warn]\ %f:%l:\ %m,%C\ %#[warn]\ %p^,%-C%.%#,%Z,
+       \%-G%.%#
+
 command! -nargs=1 Silent
 \ | execute ':silent '.<q-args>
 \ | execute ':redraw!'
@@ -112,12 +117,39 @@ endfunction
 "nmap <silent> <leader>c :call ToggleList("Quickfix List", 'c')<CR>
 
 " Ack searching
-nmap <leader>a <Esc>:Ack! 
+"nmap <leader>a <Esc>:Ack! 
 let g:ackhighlight = 1
 
 " fugitive
-nmap <leader>s :Gstatus<CR>
-nmap <leader>g :Ggrep 
+nmap <leader>gs :Gstatus<CR>
+nmap <leader>gg :Ggrep 
+nmap <leader>gw :Gwrite 
+nmap <leader>gr :Gread 
+nmap <leader>ge :Gedit 
+nmap <leader>gl :Glog 
+nmap <leader>gd :Gdiff 
+autocmd BufReadPost fugitive://* set bufhidden=delete
+
+"tabularize
+nmap <leader>aa :Tabularize<CR>
+vmap <leader>aa :Tabularize<CR>
+nmap <leader>a= :Tabularize /=<CR>
+vmap <leader>a= :Tabularize /=<CR>
+
+"invisibles
+" Shortcut to rapidly toggle
+nmap <leader>l :set list!<CR>
+" Use the same symbols as TextMate for tabstops and EOLs
+set listchars=tab:▸\ ,eol:¬
+
+" tmux navigator
+let g:tmux_navigator_no_mappings = 1
+
+nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
+nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
+nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
+nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
+nnoremap <silent> <C-\> :TmuxNavigatePrevious<cr>
 
 " Make 
 map <silent> <Leader>m :call MyMake()<cr>
@@ -128,11 +160,8 @@ nnoremap <leader>. :lcd %:p:h<CR>
 " Paste from clipboard
 map <leader>p "+gP
 
-" CommandT mapping
-nmap <silent> <Leader>f :CommandT<CR>
-
 " Delete buffer
-nmap <C-k> :bdelete<CR>
+" nmap <C-k> :bdelete<CR>
 
 "ShowMarks mappings
 set updatetime=100
@@ -182,7 +211,7 @@ let g:NERDTreeMapQuit="<F1>"
 set tags+=./tags;/
 
 " vimwiki mappings
-let g:vimwiki_list = [{'path': '~/Dropbox/vimwiki/'}]
+let g:vimwiki_list = [{'path': '~/Dropbox/wiki', 'syntax': 'markdown', 'ext': '.md'}, {'path': '~/Dropbox/vimwiki/'}]
 
 " taskpaper mappings
 nnoremap <silent> <F3> :e ~/Dropbox/main.taskpaper<CR>
@@ -193,10 +222,15 @@ nnoremap <silent> <F4> :e ~/Dropbox/log.md<CR>
 inoremap <silent> <F4> <ESC>:e ~/Dropbox/log.md<CR>
 
 " Syntastic
-let g:syntastic_mode_map = { 'mode': 'passive',
-            \ 'active_filetypes': ['ruby', 'php', 'python'],
-            \ 'passive_filetypes': ['puppet'] }
+let g:syntastic_mode_map = { 'mode': 'passive' }
 
+" Nice window title
+if has('title') && (has('gui_running') || &title)
+    set titlestring=
+    set titlestring+=%f\                                              " file name
+    set titlestring+=%h%m%r%w                                         " flags
+    set titlestring+=\ -\ %{substitute(getcwd(),\ $HOME,\ '~',\ '')}  " working directory
+endif
 
 set rtp+=$GOROOT/misc/vim/
 " ==========================================================
@@ -288,7 +322,7 @@ set shortmess+=a            " Use [+]/[RO]/[w] for modified/readonly/written.
 set ruler                   " Show some info, even without statuslines.
 set laststatus=2            " Always show statusline, even if only 1 window.
 "set statusline=%<%F%h%m%r%h%w%y\ %{&ff}\ %{\"[\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\"]\ \"}\ %{g:sfe_getStatus()}%=\ lin:%l\,%L\ col:%c%V\ pos:%o\ ascii:%b\ %P
-set statusline=%<%F%h%m%r%h%w%y\ %{&ff}\ %{\"[\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\"]\ \"}\ buf:%n\ lin:%l\,%L\ col:%c%V\ pos:%o\ ascii:%b\ %P
+set statusline=%<%F%h%m%r%h%w%y\ %{fugitive#statusline()}\ %{&ff}\ %{\"[\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\"]\ \"}\ buf:%n\ lin:%l\,%L\ col:%c%V\ pos:%o\ ascii:%b\ %P
 
 " displays tabs with :set list & displays when a line runs off-screen
 set listchars=tab:>-,eol:$,trail:-,precedes:<,extends:>
@@ -313,16 +347,27 @@ else
     set background=dark
     colorscheme wombat256mod
 endif
+highlight SignColumn guibg=black
 
 " Command-T 
 let g:CommandTMaxHeight=10
 
+" CtrlP
+" Set no max file limit
+let g:ctrlp_max_files = 0
+" Search from current directory instead of project root
+let g:ctrlp_working_path_mode = 0
+let g:ctrlp_by_filename = 1
+
+nmap <silent> <leader>f :CtrlP<CR>
+nmap <silent> <leader>b :CtrlPBuffer<CR>
+
 " Python
 "au BufRead *.py compiler nose
-au FileType python set omnifunc=pythoncomplete#Complete
-"au FileType python setlocal expandtab shiftwidth=4 tabstop=8 softtabstop=4 smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class,with
-au FileType python setlocal expandtab shiftwidth=4 tabstop=8 softtabstop=4 nosmartindent
-au BufRead *.py set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
+"au FileType python set omnifunc=pythoncomplete#Complete
+au FileType python setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2 smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class,with
+"au FileType python setlocal expandtab shiftwidth=4 tabstop=8 softtabstop=4 nosmartindent
+"au BufRead *.py set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
 
 " Add the virtualenv's site-packages to vim path
 py << EOF
@@ -339,9 +384,13 @@ EOF
 " Ragel
 au BufRead *.rl set ft=ragel
 
-"Pig
 augroup filetypedetect 
   au BufNewFile,BufRead *.pig set filetype=pig syntax=pig 
   au BufNewFile,BufRead BUILD set filetype=python syntax=python
   au BufNewFile,BufRead BUILD.* set filetype=python syntax=python
 augroup END 
+
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
